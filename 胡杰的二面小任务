@@ -1,0 +1,517 @@
+<!-- 胡杰的二面小任务：天气组件--!>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天气查询测试</title>
+    <!--
+        <link rel="stylesheet" href="./tianqi.css">
+    -->
+
+    <style>
+        /*
+@font-face {
+    font-family: 'iconfont';
+    src: url('//at.alicdn.com/t/font_1709506_2q7caonpabr.eot');
+    src: url('//at.alicdn.com/t/font_1709506_2q7caonpabr.eot?#iefix') format('embedded-opentype'),
+        url('//at.alicdn.com/t/font_1709506_2q7caonpabr.woff2') format('woff2'),
+        url('//at.alicdn.com/t/font_1709506_2q7caonpabr.woff') format('woff'),
+        url('//at.alicdn.com/t/font_1709506_2q7caonpabr.ttf') format('truetype'),
+        url('//at.alicdn.com/t/font_1709506_2q7caonpabr.svg#iconfont') format('svg');
+}
+*/
+        .iconfont {
+            font-family: "iconfont" !important;
+            font-size: 16px;
+            font-style: normal;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* 清浮动 */
+        .clear::after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+
+        body {
+            width: 100%;
+            height: 100vh;
+            background-color: #424242;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 900px;
+            height: 435px;
+            /* background-color: red; overflow: hidden;*/
+            background-color: #222831;
+            border-radius: 25px;
+            box-shadow: 0 0 70px -10px rgba(0, 0, 0, 0.2);
+            color: #ffffff;
+            margin-top: 30px;
+        }
+
+        .weather-side {
+            position: relative;
+            width: 300px;
+            height: 100%;
+
+            /* background-color: red; */
+            border-radius: 25px 0 0 25px;
+            box-shadow: 0 0 35px -10px rgba(0, 0, 0, 0.2);
+            float: left;
+        }
+
+        .gradient {
+            width: 100%;
+            height: 100%;
+            /* background-color: red; */
+            position: absolute;
+            background-image: linear-gradient(135deg, #72EDF1 10%, #5151E6 100%);
+            border-radius: 25px 0 0 25px;
+            opacity: 0.8;
+            position: absolute;
+        }
+
+        .date-container {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+        }
+
+        .date-container .date-day {
+            display: block;
+            margin-top: 4px;
+        }
+
+        #location {
+            display: block;
+            margin-top: 4px;
+        }
+
+        .weather-conteiner {
+            position: absolute;
+            bottom: 100px;
+            left: 25px;
+            width: 250px;
+        }
+
+        #weather-l {
+            font-size: 70px;
+        }
+
+        .weather-temp {
+            font-size: 4em;
+            font-weight: bold;
+        }
+
+        .waeather-desc {
+            font-size: 20px;
+        }
+
+
+        /* 右边部分 */
+        .info-side {
+            float: right;
+            /*float: right;
+     position: absolute;
+    right: 530px;background-color: red; 
+    */
+
+            padding-top: 25px;
+            margin-right: 10px;
+            margin: auto;
+            height: 100%;
+            width: 60%;
+            box-sizing: border-box;
+            left: auto;
+        }
+
+        .today-info {
+            /* background-color: royalblue; box-shadow: 0 0 50px -5px rgba(0, 0, 0, 0.4);*/
+            border-radius: 10px;
+            padding: 15px 15px 0 95px;
+            margin: 0 25px 25px 25px;
+
+        }
+
+        .today-info div {
+            margin-bottom: 10px;
+        }
+
+        .today-info div:hover {
+            transform: scale(1.1);
+            background-color: #ffffff;
+            color: #222831;
+        }
+
+        .today-info div {
+            float: left;
+            /* background-color: red; */
+            padding: 15px;
+            cursor: pointer;
+            border-radius: 10px;
+            text-align: center;
+            transition: 200ms;
+            z-index: 100;
+        }
+
+        .today-info .title {
+            float: left;
+        }
+
+        .today-info .value {
+            float: right;
+        }
+
+
+        .week-list {
+            margin: 10px 35px;
+            border-radius: 10px;
+            box-shadow: 0 0 50px -5px rgba(0, 0, 0, 0.4);
+        }
+
+        .week-list li {
+            float: left;
+            /* background-color: red; */
+            padding: 15px;
+            cursor: pointer;
+            border-radius: 10px;
+            text-align: center;
+            transition: 200ms;
+            z-index: 100;
+        }
+
+        .week-list li span {
+            display: block;
+        }
+
+        .week-list .iconfont {
+            font-size: 36px;
+        }
+
+        .week-list li:hover {
+            transform: scale(1.1);
+            background-color: #ffffff;
+            color: #222831;
+        }
+
+        .active {
+            /* transform: scale(1.1); */
+            background-color: #222831;
+            color: #ffffff;
+        }
+
+        .week-list .day-name {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .week-list .day-temp {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .location-container {
+            padding: 25px 35px;
+            position: relative;
+            /* background-color: red; */
+            /* width: 320px;
+    height: 126px; */
+            /* z-index: -10; */
+            left: auto;
+            top: 40px;
+            margin-top: 20px;
+        }
+
+        .location-container input {
+            outline: none;
+            width: 300px;
+            height: 28px;
+            padding: 6px;
+            display: block;
+            box-sizing: border-box;
+            /* font-weight: bold; */
+            position: absolute;
+            bottom: -135px;
+            /* top: 100px; */
+            left: calc(50% - 150px);
+            border: none;
+            color: #222831;
+            border-radius: 5px;
+        }
+
+        .location-container button {
+            outline: none;
+            width: 320px;
+            /* height: 35px; */
+            padding: 8px;
+            box-sizing: border-box;
+            border: none;
+            color: #ffffff;
+            background-image: linear-gradient(135deg, #72EDF1 10%, #5151E6 100%);
+            border-radius: 25px;
+            /* font-size: 18px; */
+            font-weight: bold;
+            box-shadow: 0 0 40px -5px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: 200ms;
+            position: absolute;
+            bottom: -195px;
+            left: calc(50% - 160px);
+        }
+
+        .location-container button:hover {
+            transform: scale(1.05);
+        }
+
+        .kuang {
+            height: 0px;
+            overflow: hidden;
+            background-color: transparent;
+            position:absolute;
+            margin-top: 21px;
+            transition: height 500ms;
+        }
+
+        .xlk:hover .kuang {
+            height: 200px;
+            transition: height 600ms;
+        }
+        #link{
+            text-decoration:none;
+            color:#ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <!-- 左边部分 -->
+        <div class="weather-side">
+
+            <!-- 渐变 -->
+            <div class="gradient"></div>
+            <div class="date-container">
+                <h2 class="city" id="date-dayname">查询城市</h2>
+                <!--
+                    <span class="date-day" id="date-day">2020-3-24</span>
+                -->
+
+                <span class="udt" id="location">更新时间</span>
+            </div>
+
+            <div class="weather-conteiner">
+                <span class="iconfont" id="weather-l"></span>
+                <div class="wendu" id="weather-temp">现在温度</div>
+                <div class="shidu" id="weather-desc">湿度</div>
+                <div class="fengxiang">风向</div>
+                <br><br><br>
+                <div class="xlk">
+
+                    <div class="kuang">
+                        <div>
+                            <span>穿衣指数：</span>
+                            <span id="value0"></span>
+                        </div>
+                        <div>
+                            <span>紫外线强度：</span>
+                            <span id="value1"></span>
+                        </div>
+                        <div>
+                            <span>护肤指数：</span>
+                            <span id="value2"></span>
+                        </div>
+                        <div>
+                            <span>洗车指数：</span>
+                            <span id="value3"></span>
+                        </div>
+
+                    </div>
+                    <div>
+                        <a href="javacript::" id="link">更多天气指数（点我）</a>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+
+        <!-- 右边部分 -->
+        <div class="info-side">
+            <div class="today-info-container">
+                <div class="today-info">
+                    <!-- 日出日落时间 -->
+                    <div class="pm clear">
+                        <span class="sunrise_1"></span>
+                        <span class="sunset_1"></span>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="week-container">
+                <ul class="week-list">
+                    <li class="active" id="day1">
+                        <span class="day-name" id="date_1">大佬！</span>
+                        <span class="day-temp" id="ywendu"></span>
+                        <span class="day-temp" id="type_1"></span>
+                        <span class="day-temp" id="fx_1"></span>
+                    </li>
+
+                    <li id="day2">
+                        <span class="day-name" id="tomorrowdate">求求你</span>
+                        <span class="day-temp" id="tomorrowwendu"></span>
+                        <span class="day-temp" id="tomorrowday"></span>
+                        <span class="day-temp" id="tomorrowtype"></span>
+                    </li>
+                    <li id="day3">
+
+                        <span class="day-name" id="atodate">让我过二面吧</span>
+                        <span class="day-temp" id="atowendu"></span>
+                        <span class="day-temp" id="atoday"></span>
+                        <span class="day-temp" id="atotype"></span>
+                    </li>
+                    </li>
+
+                    <!--
+                        
+                    
+                    <li id="day4">
+                        
+                        <span class="day-name">星期五</span>
+                        <span class="day-temp">25℃</span>
+                    </li>
+                    -->
+
+                </ul>
+            </div>
+
+            <div class="location-container">
+                <input type="text" placeholder="位置" id="city">
+                <button class="location-button" id="location-button">
+                    <!-- location图标 -->
+                    <span class="iconfont">查询</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var btn = document.querySelector("button");
+        var txt = document.querySelector("input");
+        btn.onclick = function () {
+            var val = txt.value;
+            var xhr = new XMLHttpRequest();
+            xhr.open('get', 'http://wthrcdn.etouch.cn/WeatherApi?city=' + val);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    console.log(xhr.responseXML);
+                    var resp = xhr.responseXML.querySelector('resp');
+                    console.log(resp);
+                    var city = resp.querySelector('city').innerHTML;
+                    console.log(city);
+                    //today
+                    var updateTime = resp.querySelector('updatetime').innerHTML;
+                    var wendu = resp.querySelector('wendu').innerHTML;
+                    var shidu = resp.querySelector('shidu').innerHTML;
+                    var fengxiang = resp.querySelector('fengxiang').innerHTML;
+                    var sunrise_1 = resp.querySelector('sunrise_1').innerHTML;
+                    var sunset_1 = resp.querySelector('sunset_1').innerHTML;
+
+                    document.querySelector(".city").innerHTML = '查询城市：' + city;
+                    document.querySelector(".udt").innerHTML = '更新时间：' + updateTime;
+                    document.querySelector(".wendu").innerHTML = '现在温度：' + wendu + '℃';
+                    document.querySelector(".shidu").innerHTML = '湿度：' + shidu;
+                    document.querySelector(".fengxiang").innerHTML = '风向：' + fengxiang;
+                    document.querySelector(".sunrise_1").innerHTML = '日出时间：' + sunrise_1;
+                    document.querySelector(".sunset_1").innerHTML = '日落时间：' + sunset_1;
+
+                    //var name = xhr.responseXML.querySelectorAll("name");
+
+                    //var detail = xhr.responseXML.querySelectorAll("detail");
+                    var value11 = xhr.responseXML.querySelectorAll("value");
+                    document.getElementById("value0").innerHTML = value11[0].innerHTML;
+                    document.getElementById("value1").innerHTML = value11[1].innerHTML;
+                    document.getElementById("value2").innerHTML = value11[2].innerHTML;
+                    document.getElementById("value3").innerHTML = value11[3].innerHTML;
+
+                    //yesterday
+                    var yesterday = xhr.responseXML.querySelector('yesterday');
+                    console.log(yesterday);
+                    var date_1 = resp.querySelector('date_1').innerHTML;
+                    console.log(date_1);
+                    var high_1 = resp.querySelector('high_1').innerHTML;
+                    var low_1 = resp.querySelector('low_1').innerHTML;
+
+                    var day_1 = xhr.responseXML.querySelector('day_1');
+                    console.log(day_1);
+                    var type_1 = resp.querySelector('type_1').innerHTML;
+                    var fx_1 = resp.querySelector('fx_1').innerHTML;
+
+
+                    document.getElementById("date_1").innerHTML = '昨天：' + date_1;
+                    document.getElementById("ywendu").innerHTML = high_1 + ' ' + low_1;
+                    document.getElementById("type_1").innerHTML = type_1;
+                    document.getElementById("fx_1").innerHTML = fx_1;
+
+
+                    var forecast = xhr.responseXML.querySelector('forecast');
+                    console.log(forecast);
+                    //forcast
+
+                    var weather = xhr.responseXML.querySelectorAll("wether");
+                    var date = xhr.responseXML.querySelectorAll("date");
+                    var high = xhr.responseXML.querySelectorAll("high");
+                    var low = xhr.responseXML.querySelectorAll("low");
+                    var day = xhr.responseXML.querySelectorAll("day");
+                    var type = xhr.responseXML.querySelectorAll("type");
+
+                    //tomorrow
+                    var date1 = date[1].innerHTML;
+                    var high1 = high[1].innerHTML;
+                    var low1 = low[1].innerHTML;
+                    var day1 = day[1].innerHTML;
+                    var type1 = type[1].innerHTML;
+
+
+                    document.getElementById("tomorrowdate").innerHTML = '明天：' + date1;
+                    document.getElementById("tomorrowwendu").innerHTML = high1 + ' ' + low1;
+                    document.getElementById("tomorrowday").innerHTML = day1;
+                    document.getElementById("tomorrowtype").innerHTML = type1;
+                    //the day after tomorrow
+                    var date2 = date[2].innerHTML;
+                    var high2 = high[2].innerHTML;
+                    var low2 = low[2].innerHTML;
+                    var day2 = day[2].innerHTML;
+                    var type2 = type[2].innerHTML;
+
+
+                    document.getElementById("atodate").innerHTML = '后天：' + date2;
+                    document.getElementById("atowendu").innerHTML = high2 + ' ' + low2;
+                    document.getElementById("atoday").innerHTML = day2;
+                    document.getElementById("atotype").innerHTML = type2;
+                }
+            }
+            xhr.send()
+        }
+    </script>
+</body>
+
+</html>
