@@ -8,6 +8,12 @@
 
 > 这是用typecho搭建的博客，域名10号过期，新域名( https://www.marlenej.com/ )还在备案
 
+演示站: http://docs.nbyg.club/demo/demo5/
+
+> 没开https，用不了geolocationapi，默认定位杭州
+
+
+
 ...
 
 
