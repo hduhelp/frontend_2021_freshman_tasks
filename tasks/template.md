@@ -1,10 +1,10 @@
 ## 任务地址
 
-天气卡片：仓库url
+天气卡片：https://github.com/rruofan/frontend_2021_freshman_tasks
 
-笔记：笔记url
+笔记：https://www.yuque.com/docs/share/bb5edad8-4ea9-488f-951c-3a28f9a0e243?# 《天气预报小卡片》
 
-博客：仓库url + githubPage地址
+博客：https://github.com/rruofan/frontend_2021_freshman_tasks + https://github.com/rruofan
 
 ...
 
@@ -12,6 +12,6 @@
 
 ## 关于我
 
-name: haha
+name: hrq
 
-QQ: 10086
+QQ: 168401913
